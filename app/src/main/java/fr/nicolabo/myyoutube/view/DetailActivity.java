@@ -2,9 +2,9 @@ package fr.nicolabo.myyoutube.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,18 +18,27 @@ import fr.nicolabo.myyoutube.model.helper.Constants;
  * Created by nicolasboueme on 16/05/2016.
  */
 public class DetailActivity extends AppCompatActivity {
-    
+
+    private Toolbar toolbar;
     private ImageView videoThumbnail;
     private TextView videoName;
     private TextView videoDescription;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         Intent intent = getIntent();
 
@@ -37,7 +46,7 @@ public class DetailActivity extends AppCompatActivity {
         
         configViews();
 
-        Picasso.with(getApplicationContext()).load(video.getImageUrl()).into(videoThumbnail);
+        Picasso.with(getApplicationContext()).load(video.getImageUrl()).noFade().fit().centerCrop().into(videoThumbnail);
         videoName.setText(video.getName());
         videoDescription.setText(video.getDescription());
     }

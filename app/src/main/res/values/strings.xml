@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">MyYoutube</string>
+    <string name="app_name">MyYouTube</string>
     <string name="video_thumbnail">Video thumbnail</string>
-    <string name="video_name">Video name</string>
-    <string name="video_description">Video description</string>
     <string name="add_to_favorites">Add to favorites</string>
     <string name="play">Play</string>
     <string name="playlist_empty">This playlist is empty</string>
+    <string name="home">Home</string>
+    <string name="favorites">Favorites</string>
+    <string name="settings">Settings</string>
 </resources>

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -44,7 +45,8 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder>
         holder.videoName.setText(currentVideo.getName());
         holder.videoDescription.setText(currentVideo.getDescription());
 
-        Picasso.with(holder.itemView.getContext()).load(currentVideo.getImageUrl()).into(holder.videoThumbnail);
+        //Glide.with(holder.itemView.getContext()).load(currentVideo.getImageUrl()).into(holder.videoThumbnail);
+        Picasso.with(holder.itemView.getContext()).load(currentVideo.getImageUrl()).noFade().fit().centerCrop().into(holder.videoThumbnail);
     }
 
     @Override
@@ -52,10 +54,10 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder>
         return videos.size();
     }
 
-    public void addVideo(Video video) {
-        Log.d(TAG, video.getName());
+    public void addVideos(Video video) {
+        //Log.d(TAG, videos.getName());
         videos.add(video);
-        notifyDataSetChanged();
+        notifyDataSetChanged(); // refresh the RecyclerView
     }
 
     public Video getSelectedVideo(int position) {
