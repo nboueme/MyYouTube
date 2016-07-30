@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -20,6 +19,9 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -27,6 +29,7 @@ import fr.nicolabo.myyoutube.R;
 import fr.nicolabo.myyoutube.controller.AppPreferencesTool;
 import fr.nicolabo.myyoutube.model.Video;
 import fr.nicolabo.myyoutube.model.VideoResponse;
+import fr.nicolabo.myyoutube.model.VideoResponseList;
 import fr.nicolabo.myyoutube.model.callback.VideoService;
 import fr.nicolabo.myyoutube.model.callback.VideoWebService;
 import fr.nicolabo.myyoutube.model.helper.Constants;
@@ -46,7 +49,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.video_description) TextView videoDescription;
     @BindView(R.id.video_id_picture) ImageView videoIdPicture;
     private Video video;
-    private static Boolean inLove = false;
+    private Boolean inLove;
     private VideoService videoService;
     private AppPreferencesTool appPreferencesTool;
 
@@ -58,6 +61,8 @@ public class DetailActivity extends AppCompatActivity {
 
         appPreferencesTool = new AppPreferencesTool(this);
         videoService = VideoWebService.getInstanceWithToken(this);
+
+        isFavorite();
 
         Window window = getWindow();
         window.setStatusBarColor(Color.BLACK);
@@ -103,9 +108,39 @@ public class DetailActivity extends AppCompatActivity {
 
         videoName.setText(video.getName());
         videoDescription.setText(video.getDescription());
+    }
 
-        if (inLove) videoIdPicture.setBackgroundResource(R.drawable.ic_favorite_black);
-        else videoIdPicture.setBackgroundResource(R.drawable.ic_favorite_border_black);
+    private void isFavorite() {
+        Call<VideoResponseList> videoListCall = videoService.getAllVideosUser(appPreferencesTool.getUserId());
+
+        videoListCall.enqueue(new Callback<VideoResponseList>() {
+            @Override
+            public void onResponse(Call<VideoResponseList> call, Response<VideoResponseList> response) {
+                if (response.isSuccessful() && !response.body().getError()) {
+                    List<Video> videos = new ArrayList<>();
+                    videos.addAll(response.body().getVideo());
+                    for (int i = 0; i < videos.size(); i++) {
+                        if (videos.get(i).getIdVideo().equals(video.getIdVideo())) {
+                            inLove = true;
+                            break;
+                        }
+                        else inLove = false;
+                    }
+
+                    Log.e("inLove", "" + inLove);
+                    if (inLove) videoIdPicture.setBackgroundResource(R.drawable.ic_favorite_black);
+                    else videoIdPicture.setBackgroundResource(R.drawable.ic_favorite_border_black);
+
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<VideoResponseList> call, Throwable t) {
+
+            }
+        });
     }
 
     @OnClick(R.id.video_id)
