@@ -1,34 +1,28 @@
 package fr.nicolabo.myyoutube.model.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.nicolabo.myyoutube.R;
 import fr.nicolabo.myyoutube.model.Video;
+import fr.nicolabo.myyoutube.model.helper.ItemTouchHelperAdapter;
+import fr.nicolabo.myyoutube.model.holder.VideoHolder;
 
 /**
  * Created by nicolasboueme on 15/05/2016.
  */
-public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder> {
+public class VideoAdapter extends RecyclerView.Adapter<VideoHolder> implements ItemTouchHelperAdapter {
 
     private static final String TAG = VideoAdapter.class.getSimpleName();
     private List<Video> videos;
-    private final VideoClickListener listener;
 
-    public VideoAdapter(VideoClickListener listener) {
+    public VideoAdapter() {
         videos = new ArrayList<>();
-        this.listener = listener;
     }
 
     @Override
@@ -41,12 +35,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder>
     @Override
     public void onBindViewHolder(VideoHolder holder, int position) {
         Video currentVideo = videos.get(position);
-
-        holder.videoName.setText(currentVideo.getName());
-        holder.videoDescription.setText(currentVideo.getDescription());
-
-        //Glide.with(holder.itemView.getContext()).load(currentVideo.getImageUrl()).into(holder.videoThumbnail);
-        Picasso.with(holder.itemView.getContext()).load(currentVideo.getImageUrl()).noFade().fit().centerCrop().into(holder.videoThumbnail);
+        holder.bind(currentVideo);
     }
 
     @Override
@@ -54,8 +43,12 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder>
         return videos.size();
     }
 
-    public void addVideos(Video video) {
-        //Log.d(TAG, videos.getName());
+    public void resetVideos() {
+        videos.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addVideo(Video video) {
         videos.add(video);
         notifyDataSetChanged(); // refresh the RecyclerView
     }
@@ -64,27 +57,16 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder>
         return videos.get(position);
     }
 
-    public class VideoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ImageView videoThumbnail;
-        private TextView videoName;
-        private TextView videoDescription;
-
-        public VideoHolder(View itemView) {
-            super(itemView);
-
-            videoThumbnail = (ImageView) itemView.findViewById(R.id.video_thumbnail);
-            videoName = (TextView) itemView.findViewById(R.id.video_name);
-            videoDescription = (TextView) itemView.findViewById(R.id.video_description);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            listener.onClick(getLayoutPosition());
-        }
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        Video prev = videos.remove(fromPosition);
+        videos.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prev);
+        notifyItemMoved(fromPosition, toPosition);
     }
 
-    public interface VideoClickListener {
-        void onClick(int position);
+    @Override
+    public void onItemDismiss(int position) {
+        videos.remove(position);
+        notifyItemRemoved(position);
     }
 }

@@ -6,7 +6,8 @@ package fr.nicolabo.myyoutube.model.helper;
 public class Constants {
 
     public static final class HTTP {
-        public static final String BASE_URL = "https://raw.githubusercontent.com";
+        //public static final String BASE_URL = "https://raw.githubusercontent.com";
+        public static final String BASE_URL = "http://myyt.nicolabo.fr";
     }
 
     public static final class REFERENCE {

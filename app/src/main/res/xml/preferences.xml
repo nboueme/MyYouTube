@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/appearance">
+        <ListPreference
+            android:key="PREF_THEME"
+            android:title="@string/theme"
+            android:summary="@string/theme_summary"
+            android:entries="@array/themesList"
+            android:entryValues="@array/themesListValues"
+            android:defaultValue="2" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/managing_favorites">
+        <Preference
+            android:key="PREF_FAVORITES"
+            android:title="@string/remove_favorites"
+            android:summary="@string/remove_favorites_summary"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/managing_account">
+        <Preference
+            android:key="PREF_LOG_OUT"
+            android:title="@string/user_log_out"
+            android:summary="@string/user_log_out_summary" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
